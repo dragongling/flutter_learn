@@ -46,6 +46,11 @@ class MyAppState extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void removeAt(int index) {
+    favorites.removeAt(index);
+    notifyListeners();
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -218,15 +223,41 @@ class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    var favorites = appState.favorites;
 
-    return ListView(
+    if (favorites.isEmpty) {
+      return Center(child: Text('No favorites added yet'));
+    }
+
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
       padding: EdgeInsets.all(8.0),
-      children: appState.favorites
-          .map((e) => Card(
-              child:
-                  Text('${e.first}${e.second}', textAlign: TextAlign.center)),
-      )
-          .toList(),
+      itemBuilder: (BuildContext context, int index) {
+        return Center(
+          child: SizedBox(
+            width: 300,
+            child: Card(
+                child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                        '${favorites[index].first}${favorites[index].second}',
+                        textAlign: TextAlign.center),
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        appState.removeAt(index);
+                      },
+                      icon: Icon(Icons.delete))
+                ],
+              ),
+            )),
+          ),
+        );
+      },
+      itemCount: favorites.length,
     );
   }
 }
