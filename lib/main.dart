@@ -225,7 +225,6 @@ class FavoritesPage extends StatelessWidget {
           .map((e) => Card(
               child:
                   Text('${e.first}${e.second}', textAlign: TextAlign.center)),
-        si
       )
           .toList(),
     );
