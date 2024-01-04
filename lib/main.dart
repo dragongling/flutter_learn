@@ -2,7 +2,8 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'components/buttons/like_button.dart';
+import 'pages/favorites.dart';
+import 'pages/generator.dart';
 
 void main() {
   runApp(MyApp());
@@ -110,112 +111,5 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
     });
-  }
-}
-
-class GeneratorPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    var pair = appState.current;
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BigCard(pair: pair),
-          SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              LikeButton(
-                onLikePressed: () {
-                  appState.toggleFavorite();
-                },
-                isPressed: appState.isCurrentFavorite(),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                  onPressed: () {
-                    appState.getNext();
-                  },
-                  child: Text('Next')),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class BigCard extends StatelessWidget {
-  const BigCard({
-    super.key,
-    required this.pair,
-  });
-
-  final WordPair pair;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
-    );
-
-    return Card(
-      color: theme.primaryColor,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Text(
-          pair.asLowerCase,
-          style: style,
-          semanticsLabel: "${pair.first} ${pair.second}",
-        ),
-      ),
-    );
-  }
-}
-
-class FavoritesPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    var favorites = appState.favorites;
-
-    if (favorites.isEmpty) {
-      return Center(child: Text('No favorites added yet'));
-    }
-
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      padding: EdgeInsets.all(8.0),
-      itemBuilder: (BuildContext context, int index) {
-        return Center(
-          child: SizedBox(
-            width: 300,
-            child: Card(
-                child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                        '${favorites[index].first}${favorites[index].second}',
-                        textAlign: TextAlign.center),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        appState.removeAt(index);
-                      },
-                      icon: Icon(Icons.delete))
-                ],
-              ),
-            )),
-          ),
-        );
-      },
-      itemCount: favorites.length,
-    );
   }
 }
