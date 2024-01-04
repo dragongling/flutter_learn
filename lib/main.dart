@@ -2,6 +2,8 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'components/buttons/like_button.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -111,14 +113,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class LikeButtonParams {
-  ButtonStyle? style;
-  IconData? icon;
-  String text;
-
-  LikeButtonParams({this.style, this.icon, required this.text});
-}
-
 class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -134,7 +128,12 @@ class GeneratorPage extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              LikeButton(appState: appState),
+              LikeButton(
+                onLikePressed: () {
+                  appState.toggleFavorite();
+                },
+                isPressed: appState.isCurrentFavorite(),
+              ),
               SizedBox(width: 10),
               ElevatedButton(
                   onPressed: () {
@@ -143,47 +142,6 @@ class GeneratorPage extends StatelessWidget {
                   child: Text('Next')),
             ],
           )
-        ],
-      ),
-    );
-  }
-}
-
-class LikeButton extends StatelessWidget {
-  const LikeButton({
-    super.key,
-    required this.appState,
-  });
-
-  final MyAppState appState;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final likedStyle = LikeButtonParams(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: theme.primaryColor,
-        foregroundColor: theme.colorScheme.onPrimary,
-      ),
-      icon: Icons.favorite,
-      text: 'Liked',
-    );
-    final defaultStyle = LikeButtonParams(
-      icon: Icons.favorite_border,
-      text: 'Like',
-    );
-    var currentStyle = appState.isCurrentFavorite() ? likedStyle : defaultStyle;
-
-    return ElevatedButton(
-      onPressed: () {
-        appState.toggleFavorite();
-      },
-      style: currentStyle.style,
-      child: Row(
-        children: [
-          Icon(currentStyle.icon),
-          SizedBox(width: 5),
-          Text(currentStyle.text),
         ],
       ),
     );
