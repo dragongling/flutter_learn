@@ -72,6 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GeneratorPage();
       case 1:
         page = FavoritesPage();
+      case 2:
+        page = TasksPage();
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -92,6 +94,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     icon: Icon(Icons.favorite),
                     label: Text('Favorites'),
                   ),
+                  NavigationRailDestination(
+                      icon: Icon(Icons.task), label: Text("Tasks"))
                 ],
                 selectedIndex: selectedIndex,
                 onDestinationSelected: (value) {
@@ -111,5 +115,66 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
     });
+  }
+}
+
+class TasksPage extends StatefulWidget {
+  @override
+  State<TasksPage> createState() => _TasksPageState();
+}
+
+class Task {
+  String text;
+  DateTime creationTime;
+
+  Task(this.text, this.creationTime);
+}
+
+class _TasksPageState extends State<TasksPage> {
+  final newTaskController = TextEditingController();
+
+  @override
+  void dispose(){
+    newTaskController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Expanded(child: TextField(controller: newTaskController,)),
+                TextButton(onPressed: () {
+                  print(newTaskController.text);
+                  final now = DateTime.now();
+                  print(now);
+                  print(now.timeZoneOffset);
+                  print(now.timeZoneName);
+                }, child: Text("Добавить"),),
+              ],
+            ),
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return Card();
+            },
+            // constraints: BoxConstraints(
+            //   // maxWidth: Responsive.isMobile(context) ? Get.width : 600,
+            // ),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 }
